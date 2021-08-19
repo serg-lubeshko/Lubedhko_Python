@@ -98,3 +98,31 @@ class Product(models.Model):
 
 ```
 
+Проверить
+
+```python
+from django.db import models
+from django.core.exceptions import ValidationError
+
+def validate_image(fieldfile_obj):
+    filesize = fieldfile_obj.file.size
+    megabyte_limit = 5.0
+    if filesize > megabyte_limit*1024*1024:
+        raise ValidationError("Max file size is %sMB" % str(megabyte_limit))
+
+class UFOPicture(models.Model):
+    name = models.CharField(max_length=128)
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d', height_field='height_field', width_field='width_field', validators=[validate_image])
+    height_field = models.PositiveIntegerField(default=0)
+    width_field = models.PositiveIntegerField(default=0)
+    
+
+    def delete(self, *args, **kwargs):
+        storage, path = self.photo.storage, self.photo.path
+        storage.delete(path)
+        super(UFOPicture, self).delete(*args,**kwargs)
+
+    class Meta:
+        app_label = 'myapp'
+```
+

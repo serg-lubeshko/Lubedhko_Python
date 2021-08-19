@@ -17,6 +17,7 @@ URL репозитория можно получить нажав на ту са
 2.Открой терминал, затем зайди в папку, где у тебя лежит скачанный файл. Теперь пропиши эти команды по порядку:
 
 git init
+git add .
 git commit -m "first commit"
 git remote add origin https://github.com/твой_аккаунт/имя_репозитория.git
 git push -u origin master
