@@ -104,3 +104,4 @@ admin.site.register(CustomUser, CustomUserAdmin)
 Поздравляем! Ваш проект Django рассчитан на будущее и вы можете продолжить работу без проблем.
 
 *Перевод статьи https://wsvincent.com/django-tips-custom-user-model/*
+
