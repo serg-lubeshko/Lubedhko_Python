@@ -172,3 +172,31 @@ MIDDLEWARE = [
 |                         |                                                              |
 |                         |                                                              |
 |                         |                                                              |
+
+#### ОШИБКИ!
+
+{"detail":"CSRF Failed: CSRF token missing or incorrect."}. До этого сервер работал, но начал выкидывать ошибку 403. Почему через некоторое время не понятно. 
+
+Вроде решил вопрос путем написания в сеттинге следующее:
+
+```python
+REST_FRAMEWORK = {
+....
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+```
+
+Интересно!
+
+Обычно, когда вы делаете запрос через форму, вы хотите, чтобы форма, отправляемая в ваше представление, исходила с вашего веб-сайта, а не из какого-либо другого домена. Чтобы убедиться, что это произойдет, вы можете поместить маркер csrf в свою форму, чтобы ваше представление распознало его. Если вы добавляете `@csrf_exempt` в верхнюю часть своего представления, то вы в основном говорите представлению, что ему не нужен токен. Это исключение из правил безопасности, к которому вы должны отнестись серьезно.
+
+```python
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def my_view(request):
+    return HttpResponse('Hello world')
+```
+

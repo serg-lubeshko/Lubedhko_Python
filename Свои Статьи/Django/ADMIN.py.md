@@ -78,3 +78,25 @@ class NoteBookAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(self, db_field, request, **kwargs)
 ```
 
+#### Добавить поле в админке, если M2M
+
+Для нашей модели `Book` добавим отображение полей `author` и `genre`. Поле `author` - это внешний ключ (`ForeignKey` ) связи один к одному, поэтому оно будет представлено значением `__str()__` для связанной записи. Замените класс `BookAdmin` на версию, приведённую ниже.
+
+```python
+class BookAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'display_genre')
+```
+
+К сожалению, мы не можем напрямую поместить поле genre в `list_display`, так как оно является `ManyToManyField` (Django не позволяет это из-за большой "стоимости" доступа к базе данных). Вместо этого мы определим функцию `display_genre` для получения строкового представления информации (вызов этой функции есть в `list_display`, её определение см. ниже).
+
+в model.py
+
+```python
+    def display_genre(self):
+        """
+        Creates a string for the Genre. This is required to display genre in Admin.
+        """
+        return ', '.join([ genre.name for genre in self.genre.all()[:3] ])
+    display_genre.short_description = 'Genre'
+```
+
